@@ -1,8 +1,3 @@
-
----
-
-### 2. `remote_mongodump.sh`
-
 ```bash
 #!/bin/bash
 
