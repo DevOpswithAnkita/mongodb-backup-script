@@ -1,4 +1,6 @@
+# Let's write the updated MongoDB commands with user management and backup/restore to a text file.
 
+mongodb_commands = """
 Useful MongoDB Queries and Commands
 ===================================
 
@@ -87,9 +89,54 @@ db.getCollectionNames().forEach(function(c) {
   print(c + ": " + s.size.toFixed(2) + " MB");
 });
 
-21. Run this in the shell for all collections
-------------------------------------------------------
+21. Show all collections' sizes in GB
+-------------------------------------
 db.getCollectionNames().forEach(function(coll) {
   var stats = db.getCollection(coll).stats({ scale: 1024 * 1024 * 1024 });
   print(coll + " - Data: " + stats.size.toFixed(2) + " GB, Storage: " + stats.storageSize.toFixed(2) + " GB, Indexes: " + stats.totalIndexSize.toFixed(2) + " GB");
 });
+
+22. User Management
+-------------------
+
+Create a new user:
+-------------------
+db.createUser({
+  user: "admin_user",
+  pwd: "secure_password",
+  roles: [
+    { role: "userAdminAnyDatabase", db: "admin" },
+    { role: "readWrite", db: "your_database_name" }
+  ]
+})
+
+Show all users:
+-------------------
+db.getUsers()
+
+Drop a user:
+-------------------
+db.dropUser("admin_user")
+
+Update user password:
+-------------------
+db.changeUserPassword("admin_user", "new_secure_password")
+
+23. Backup and Restore
+----------------------
+
+Backup using mongodump:
+mongodump --host localhost --port 27017 --db your_db_name --out /path/to/backup/folder
+
+Backup with authentication:
+mongodump --uri="mongodb://username:password@localhost:27017/your_db_name" --out /path/to/backup
+
+Run mongodump in background and save logs:
+nohup bash remote_mongodump.sh > mongodump.log 2>&1 &
+
+Restore a backup using mongorestore:
+mongorestore --host localhost --port 27017 --db your_db_name /path/to/backup/your_db_name
+
+Restore with authentication:
+mongorestore --uri="mongodb://username:password@localhost:27017/your_db_name" /path/to/backup/your_db_name
+
