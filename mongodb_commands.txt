@@ -1,0 +1,95 @@
+
+Useful MongoDB Queries and Commands
+===================================
+
+1. Show all databases
+---------------------
+show dbs
+
+2. Show all collections in the current DB
+-----------------------------------------
+show collections
+
+3. Get stats for current database
+---------------------------------
+db.stats()
+
+4. Get collection stats (in GB)
+-------------------------------
+db.collection_name.stats({ scale: 1024 * 1024 * 1024 })
+
+5. Find one document
+--------------------
+db.collection_name.findOne()
+
+6. Find with filter and projection
+----------------------------------
+db.collection_name.find({ status: "active" }, { _id: 0, name: 1, status: 1 })
+
+7. Count documents
+------------------
+db.collection_name.countDocuments({ status: "active" })
+
+8. List indexes
+---------------
+db.collection_name.getIndexes()
+
+9. Create index
+---------------
+db.collection_name.createIndex({ field_name: 1 })
+
+10. Delete many
+---------------
+db.collection_name.deleteMany({ status: "inactive" })
+
+11. Update documents
+--------------------
+db.collection_name.updateMany({ status: "new" }, { $set: { status: "active" } })
+
+12. Aggregation example (grouping)
+----------------------------------
+db.collection_name.aggregate([
+  { $group: { _id: "$status", count: { $sum: 1 } } }
+])
+
+13. Query with sorting and limit
+--------------------------------
+db.collection_name.find().sort({ created_at: -1 }).limit(10)
+
+14. Explain query performance
+-----------------------------
+db.collection_name.find({ status: "active" }).explain("executionStats")
+
+15. Drop a collection
+---------------------
+db.collection_name.drop()
+
+16. Show users
+--------------
+db.getUsers()
+
+17. Show roles
+--------------
+db.getRoles({ showBuiltinRoles: false })
+
+18. Server status overview
+--------------------------
+db.serverStatus()
+
+19. List slow queries
+---------------------
+db.system.profile.find({ millis: { $gt: 100 } }).sort({ millis: -1 })
+
+20. Collection size report for all collections (in MB)
+------------------------------------------------------
+db.getCollectionNames().forEach(function(c) {
+  var s = db[c].stats({ scale: 1024 * 1024 });
+  print(c + ": " + s.size.toFixed(2) + " MB");
+});
+
+21. Run this in the shell for all collections
+------------------------------------------------------
+db.getCollectionNames().forEach(function(coll) {
+  var stats = db.getCollection(coll).stats({ scale: 1024 * 1024 * 1024 });
+  print(coll + " - Data: " + stats.size.toFixed(2) + " GB, Storage: " + stats.storageSize.toFixed(2) + " GB, Indexes: " + stats.totalIndexSize.toFixed(2) + " GB");
+});
