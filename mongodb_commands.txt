@@ -1,6 +1,3 @@
-# Let's write the updated MongoDB commands with user management and backup/restore to a text file.
-
-mongodb_commands = """
 Useful MongoDB Queries and Commands
 ===================================
 
